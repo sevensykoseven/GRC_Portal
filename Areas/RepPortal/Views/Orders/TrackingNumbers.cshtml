@@ -1,0 +1,28 @@
+﻿@model protean.Areas.RepPortal.Models.TrackingNumbersViewModel
+
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="TrackingNumberTitle">Tracking Numbers</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            @if (Model.ResponseObject.value.Count > 0)
+            {
+                foreach (var item in Model.ResponseObject.value)
+                {
+                    <p class="mr-2 ml-2">@(String.IsNullOrWhiteSpace(item.MasterPack_TrackingNumber.ToString()) ? "unavailable" : item.MasterPack_TrackingNumber)</p>
+                }
+            }
+            else
+            {
+                <p class="mr-2 ml-2">There are no tracking numbers for this order.  Please contact your account manager for more information.</p>
+            }
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>

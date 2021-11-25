@@ -1,0 +1,111 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutInternal.cshtml";
+    ViewBag.Title = "Dashboard";
+}
+
+@* Page Heading *@
+<div class="pt-page-header d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fa fa-tachometer-alt fa-fw mr-2"></i>Dashboard</h1>
+</div>
+
+@* Content Row *@
+<div class="row">
+    <div class="col-xl-4 col-lg-7 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-users fa-fw mr-2"></i>Manage Sales Reps</h6>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action " href="@Url.Action("Import", "SalesReps", new { area = "Employee" })" role="tab">
+                        <span class=""><i class="fas fa-user-plus fa-fw"></i></span>
+                        <span class="">Add Rep To Portal</span>
+                    </a>
+                    <a class="list-group-item list-group-item-action " href="@Url.Action("RepList", "SalesReps", new { area = "Employee" })" role="tab">
+                        <span class=""><i class="fas fa-edit fa-fw"></i></span>
+                        <span class="">View / Edit Portal Reps</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (User.IsInRole("grcsalesmanager"))
+    {
+        <div class="col-xl-4 col-lg-7 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-tasks fa-fw mr-2"></i>Sales Management</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a class="list-group-item list-group-item-action " href="@Url.Action("Index", "SalesManagers", new { area = "Employee" })" role="tab">
+                            <span class=""><i class="fas fa-fw fa-dollar-sign"></i></span>
+                            <span class="">Booking Overview</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action " href="@Url.Action("Quotes", "SalesManagers", new { area = "Employee" })" role="tab">
+                            <span class=""><i class="fas fa-fw fa-file-alt"></i></span>
+                            <span class="">Quoting Overview</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (User.IsInRole("grcexecutive"))
+    {
+        <div class="col-xl-4 col-lg-7 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-tasks fa-fw mr-2"></i>Executive Overview</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a class="list-group-item list-group-item-action " href="@Url.Action("Index", "Executive", new { area = "Employee" })" role="tab">
+                            <span class=""><i class="fas fa-dollar-sign mr-2"></i></span>
+                            <span class="">Booking Overview</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="col-xl-4 col-lg-7 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-tools fa-fw mr-2"></i>External Tools</h6>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action " href="https://powerbi.microsoft.com/en-us/" target="_blank" role="tab">
+                        <span class=""><i class="fas fa-chart-bar fa-fw"></i></span>
+                        <span class="">Power BI</span>
+                    </a>
+                    <a class="list-group-item list-group-item-action " href="https://office.com" target="_blank" role="tab">
+                        <span class=""><i class="fab fa-microsoft fa-fw"></i></span>
+                        <span class="">Microsoft Office</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (User.IsInRole("super"))
+    {
+        <div class="col-xl-4 col-lg-7 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-toolbox fa-fw mr-2"></i>System Management</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a class="list-group-item list-group-item-action " href="@Url.Action("Index", "Users", new { area = "admin" })" role="tab">
+                            <span class=""><i class="fas fa-users fa-fw"></i></span>
+                            <span class="">Users and Roles</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>

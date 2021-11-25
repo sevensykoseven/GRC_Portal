@@ -1,0 +1,108 @@
+﻿@model dynamic
+@{
+    Layout = "~/Views/Shared/_LayoutInternal.cshtml";
+    ViewBag.Title = "Rest Test";
+}
+
+@section Styles {
+    @*@Styles.Render("~/datatables")*@
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+}
+
+@helper ConvertHoursFromDecimal(Decimal num)
+{
+    var hours = Math.Floor(num);
+    var mins = Convert.ToInt32(60 * (num - hours));
+
+    @String.Format("{0}:{1}", hours, mins)
+}
+
+@Html.AntiForgeryToken()
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Clock Out Employees</h1>
+</div>
+
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Employees Clocked In</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+
+            @if (Model.value.Count > 0)
+            {
+                <table id="Employees" class="table table-striped table-hover" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Number</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Clock In Date</th>
+                            <th>Clock In Time</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.value)
+                        {
+                        <tr data-id="@item.EmployeeNum">
+                            <td>
+                                @item.EmployeeNum
+                            </td>
+                            <td>
+                                @item.EmployeeNumFirstName
+                            </td>
+                            <td>
+                                @item.EmployeeNumLastName
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(item.ClockInDate).ToShortDateString()
+                            </td>
+                            <td>
+                                @ConvertHoursFromDecimal(Convert.ToDecimal(item.ClockInTime))
+                            </td>
+                            <td>
+                                <span title="Clock Out" class="pt-clickable clockout"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i></span>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    @*@Scripts.Render("~/datatables")*@
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $('#Employees').DataTable({
+                "pageLength": 50,
+                "info": true,
+                "paging": true
+            });
+
+            $(".clockout").on("click", function (e) {
+                var id = $(this).parent().parent().data("id");
+                var elem = $(this).parent()
+                $.post("@Url.Action("ClockOutEmployee", "REST")", { __RequestVerificationToken: token, id: id }).done(function (result) {
+						if (result != null && result.success){
+							RemoveRow(elem);
+							alert('Employee clocked out.');
+						}
+					}).fail(function (request, status, error) {
+                        alert('Ouch! Employee could not be clocked out!');
+					});
+            });
+        });
+</script>
+}

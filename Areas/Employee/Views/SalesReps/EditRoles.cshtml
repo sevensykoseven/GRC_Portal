@@ -1,0 +1,189 @@
+﻿@model protean.Areas.Employee.Models.EditRolesViewModel
+@{
+    ViewBag.Title = "Edit Roles";
+}
+
+<div class="pt-page-header d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fa fa-user fa-fw mr-2"></i>Edit Roles</h1>
+    <a href="#" onclick="GoBackOne();" class="d-none d-sm-inline-block btn btn-circle btn-primary shadow-sm"><i class="fas fa-arrow-left fa-sm"></i></a>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-xl-3 col-lg-9 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <div class="flex-container">
+                        <div class="kt-media-divcorrection">
+                            <div class="kt-media kt-media--lg kt-media--circle">
+                                @if (!String.IsNullOrWhiteSpace(Model.User.BadgePath))
+                                {
+                                    <img src="@Model.User.BadgePath" alt="image">
+                                }
+                                else
+                                {
+                                    <span class="pt-badgecolor">@Html.DisplayFor(x => Model.User.Initials)</span>
+                                }
+                            </div>
+                        </div>
+                        <div>
+                            <div href="#" class="m-0 font-weight-bold text-primary">
+                                @Model.User.FullName
+                            </div>
+                            <div class="pt-user__desc">
+                                @Model.User.Title
+                            </div>
+                            <div class="pt-user__desc">
+                                Roles: @String.Join(", ", Model.User.RoleNames().Select(x => x.ToString()).ToArray())
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a class="list-group-item list-group-item-action " href="@Url.Action("Edit", "SalesReps", new {id = Model.User.Id, area = "Employee" })" role="tab">
+                            <span class=""><i class="fas fa-id-card mr-2"></i></span>
+                            <span class="">Personal Information</span>
+                        </a>
+                            <a class="list-group-item list-group-item-action " href="@Url.Action("EditRoles", "Users", new { id = Model.User.Id, area = "Employee" })" role="tab">
+                                <span class=""><i class="fas fa-user-tag mr-2"></i></span>
+                                <span class="">Edit Roles</span>
+                            </a>
+                        @if (Model.User.IsEnabled.HasValue ? (bool)Model.User.IsEnabled : false)
+                        {
+                            <a class="list-group-item list-group-item-action text-warning" href="#" role="tab" data-id="@Model.User.Id" data-toggle="modal" data-target="#disableConfirmModal">
+                                <span class=""><i class="fas fa-user-slash mr-2"></i></span>
+                                <span class="">Disable Account</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="list-group-item list-group-item-action text-primary" href="#" role="tab" data-id="@Model.User.Id" id="lnkEnable">
+                                <span class=""><i class="fas fa-user mr-2"></i></span>
+                                <span class="">Enable Account</span>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow bg-warning  @MyHelpers.ShowNotShow(!(Model.User.IsEnabled.HasValue ? (bool)Model.User.IsEnabled : false))">
+                <div class="card-body">
+                    <h4 class="font-weight-bold text-white">
+                        Account Disabled
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-9 col-lg-9 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <div class="flex-container">
+                        <div class="">
+                            <h6 class="m-0 font-weight-bold text-gray-600">User Roles</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @Html.HiddenFor(model => model.UserId)
+                    @for (int i = 0; i < Model.Roles.Count; i++)
+                    {
+                        <div class="form-group row pl-4 mb-4">
+                            <div class="custom-control custom-switch">
+                                @Html.CheckBoxFor(x => x.Roles[i].Selected, new { @class = "custom-control-input" })
+                                @Html.LabelFor(x => x.Roles[i].Selected, Model.Roles[i].RoleName, new { @class = "custom-control-label" })
+
+
+                                @Html.HiddenFor(x => x.Roles[i].RoleName)
+
+                            </div>
+                        </div>
+                    }
+
+                    <div>
+                        <div class="row">
+                            <div class="col-lg-3 col-xl-3">
+                                <button type="submit" class="btn btn-primary">Save</button>&nbsp;
+                                <button type="button" class="btn btn-secondary cancel">Cancel</button>
+                            </div>
+                            <div class="col-lg-9 col-xl-9">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="modal fade" id="disableConfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModelLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Disable User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to disable this user?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="btnDisable" class="btn btn-warning">Disable</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        var userid = 0;
+		$(document).ready(function () {
+			$("#disableConfirmModal").on("show.bs.modal", function (e) {
+				userid = $(e.relatedTarget).data("id");
+            });
+
+		    $("#btnDisable").bind("click", function (e) {
+				    e.preventDefault();
+				    var token = $('input[name="__RequestVerificationToken"]').val();
+                $.post("@Url.Action("Disable", "Users")", { __RequestVerificationToken: token, id: '@Model.User.Id' }).done(function (response) {
+                        $("#disableConfirmModal").modal('hide');
+                        if (response != null) {
+                            window.location = "@Url.Action("Edit", new { id = Model.User.Id })";
+                        }
+                    }).fail(function (request, status, error) {});
+            });
+
+            $("#lnkEnable").bind("click", function (e) {
+				    e.preventDefault();
+				    var token = $('input[name="__RequestVerificationToken"]').val();
+				    $.post("@Url.Action("Enable", "Users")", { __RequestVerificationToken: token, id: '@Model.User.Id' }).done(function (response) {
+                        if (response != null) {
+                            window.location = "@Url.Action("Edit", new { id = Model.User.Id })";
+                        }
+                    }).fail(function (request, status, error) {});
+            });
+
+            $(".cancel").bind("click", function (e) {
+		        e.preventDefault();  @*prevent default click behavior*@
+		        window.location = "@Url.RouteUrl("home")";
+            });
+        });
+
+    </script>
+
+    @if (TempData["response"] != null)
+    {
+        <script type="text/javascript">
+			$(document).ready(function () {
+                ShowMessage('@TempData["response"]', 'bg-success');
+			});
+        </script>
+
+    }
+}

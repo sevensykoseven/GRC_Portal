@@ -1,0 +1,16 @@
+﻿@model List<Microsoft.AspNet.Identity.EntityFramework.IdentityRole>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div>
+    @foreach (var item in Model)
+    {
+        <div>@item.Name</div>
+    }
+</div>
+<div>
+    @Html.ActionLink("Create Role", "Create")
+</div>

@@ -1,0 +1,86 @@
+﻿@model protean.Areas.Admin.Models.NewUserViewModel
+@{
+    ViewBag.Title = "Add User";
+}
+
+<div class="pt-page-header d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fa fa-user fa-fw mr-2"></i>Add User</h1>
+    <a href="@Url.Action("Index")" class="d-none d-sm-inline-block btn btn-circle btn-primary shadow-sm"><i class="fas fa-arrow-left fa-sm"></i></a>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-xl-5 col-lg-6 mb-4">
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label" })
+
+                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label" })
+
+                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label" })
+
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
+
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+
+            @*<div class="form-group">
+                @Html.LabelFor(model => model.BadgePath, htmlAttributes: new { @class = "control-label" })
+
+                @Html.EditorFor(model => model.BadgePath, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.BadgePath, "", new { @class = "text-danger" })
+            </div>*@
+
+            <div class="form-group mb-4">
+                <div class="custom-control custom-switch">
+                    @Html.CheckBoxFor(model => model.IsEnabled, new { @class = "custom-control-input" })
+                    @Html.LabelFor(model => model.IsEnabled, new { @class = "custom-control-label" })
+                </div>
+                @Html.ValidationMessageFor(model => model.IsEnabled, "", new { @class = "text-danger" })
+            </div>
+
+
+            <div class="row">
+                <div class="col-xl-5 col-lg-6 mb-4">
+                    <button type="submit" class="btn btn-primary">Create</button>&nbsp;
+                    <button type="button" class="btn btn-secondary cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        $(".cancel").bind("click", function (e) {
+		    e.preventDefault();  @*prevent default click behavior*@
+		    window.location = "@Url.Action("Index", "Users")";
+        });
+    </script>
+}

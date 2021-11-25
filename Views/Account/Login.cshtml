@@ -1,0 +1,67 @@
+﻿@model protean.Models.LoginViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutExternal.cshtml";
+    ViewBag.Title = "Portal";
+}
+@section Styles {
+    <link href="~/Content/css/login-v1.css" rel="stylesheet" type="text/css" />
+    <a href="~/Views/Account/Login.cshtml">~/Views/Account/Login.cshtml</a>
+}
+<div id="login-page">
+    <div class="kt-login-v1" id="kt_login_v1" style="">
+        @*-- ITEM --*@
+        <div class="" style="margin-bottom:100px;">
+            @*-- BODY --*@
+            <div class="kt-login-v1__body">
+                @*-- SECTION --*@
+                <div class="kt-login-v1__section">
+                    @*<div class="kt-login-v1__info">
+                <h1 class="kt-login-v1__intro"><img src="~/Content/img/environment.png" style="width:80px;height:auto;" class="mr-2" alt="round table">round table</h1>
+                <p>
+                    /round ta·ble/ : gathering of people where each participant has equal rights
+                    <br />
+                </p>
+            </div>*@
+                    <div class="kt-login-v1__info">
+                        <h1 class="kt-login-v1__intro"><a href="/" class="text-decoration-none"><img src="~/Content/media/logos/GRCC_Logo_Horizontal_White.png" style="width:100%;height:auto;" alt="GRCC Logo"></a></h1>
+                        <p>
+                            / design-forward; quality made /
+                        </p>
+                    </div>
+                </div>
+                <a href="~/Controllers/AccountController.cs">~/Controllers/AccountController.cs</a>
+                @*-- SEPERATOR --*@
+                <div class="kt-login-v1__seaprator"></div>
+                @*-- WRAPPER --*@
+                <div class="kt-login-v1__wrapper">
+                    <div class="kt-login-v1__container">
+
+                        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "kt-login-v1__form kt-form", role = "form" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "PT-alert PT-alert-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Email, new { @class = "sr-only" })
+                                @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control", placeholder = "email ...", data_val_required = "Email is required", autofocus = "" } })
+                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-validation-error" })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Password, new { @class = "sr-only" })
+                                @Html.EditorFor(m => m.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "password ...", data_val_required = "Password is required" } })
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-validation-error" })
+                            </div>
+
+                            <div class="kt-login-v1__actions">
+                                <button type="submit" class="btn PT-btn-default btn-lg btn-block">LOGIN</button>
+                            </div>
+                            <p>
+                                @Html.ActionLink("Forgot your password?", "ForgotPassword", null, new { @class = "PT-forgotpassword" })
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

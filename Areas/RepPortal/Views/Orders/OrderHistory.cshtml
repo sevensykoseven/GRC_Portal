@@ -1,0 +1,239 @@
+﻿@using MyUtils
+@using protean.Infrastructure
+
+@model protean.Areas.RepPortal.Models.OrderHistoryViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutInternal.cshtml";
+    ViewBag.Title = "Order History";
+}
+
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+}
+
+@*-- Page Heading --*@
+<div class="pt-page-header flex-container align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fa fa-list-alt fa-fw mr-2"></i>My Order History</h1>
+    @*<a href="" id="btnDownload" class=" btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>*@
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1">Select Year</div>
+                        <div class="h5 font-weight-bold text-gray-800 mb-2">
+                            @Html.DropDownList("SelectedYear",
+                            new SelectList(Enumerable.Range(DateTime.Now.Year - Utils.GetYearsUsingEpicor(), Utils.GetYearsUsingEpicor() + 1).OrderByDescending(x => x.ToString()).ToList(), Model.SelectedYear),
+                            htmlAttributes: new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Filter" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 id="lblYear" class="m-0 font-weight-bold text-primary">@Model.SelectedYear</h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">Reports:</div>
+                            <a class="dropdown-item" id="btnDownload" href="#"><i class="fas fa-download fa-sm mr-2"></i>Download .xlsx</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        @if (Model.ResponseObject.value.Count > 0)
+                        {
+                            <table id="OrderHistory" class="table table-striped table-hover" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th> <!-- Jasmine 26-10-2021 -->
+                                        <th>Customer</th>
+                                        <th>SO</th>
+                                        <th>PO</th>
+                                        <th>Order Date</th>
+                                        <th>Order Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ResponseObject.value)
+                                    {
+                                    <tr>
+                                        <td class="pt-clickable click tracking fa-fw" data-id="@item.OrderHed_OrderNum"><i class="fas fa-link" title="Tracking Number" data-toggle="tooltip" data-placement="top"></i></td>
+                                        <td class="pt-clickable click print fa-fw" data-id="@item.OrderHed_OrderNum"><i class="fas fa-file" title="Request Order Acknowledgement Copy" data-toggle="tooltip" data-placement="top"></i></td>
+                                        <td class="pt-clickable click shipdetails fa-fw" id="shipdetails" data-id="@item.OrderHed_OrderNum"><i class="fas fa-list" title="Ship Details" data-toggle="tooltip" data-placement="top"></i></td> <!-- Jasmine 26-10-2021 -->
+                                        <td>
+                                            @item.Customer_Name
+                                        </td>
+                                        <td>
+                                            @item.OrderHed_OrderNum
+                                        </td>
+                                        <td>
+                                            @item.OrderHed_PONum
+                                        </td>
+                                        <td>
+                                            @Convert.ToDateTime(item.OrderHed_OrderDate).ToShortDateString()
+                                        </td>
+                                        <td>
+                                            @Convert.ToDouble(item.OrderHed_OrderAmt).ToString("C")
+                                        </td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p>No orders were found for this year.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="modal" id="TrackingNumbers" role="dialog" aria-labelledby="TrackingNumbers" aria-hidden="true">
+</div>
+
+<div class="modal" id="OrderAck" tabindex="-1" role="dialog" aria-labelledby="OrderAck" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="OrderAckModelLabel"><i class="fa fa-info-circle fa-fw mr-2"></i>Order Acknowledgement Request</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Your request for a copy of your order acknowledgement has been queued. You can expect an email sent to @Current.User.Email shortly.</p>
+                <p>If no order acknowledgement is received, please check our junk or spam folders. If not found, please reach out to your account manager.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="OrderAckRequest" tabindex="-1" role="dialog" aria-labelledby="OrderAckRequest" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="OrderAckModelLabel"><i class="fa fa-info-circle fa-fw mr-2"></i>Original Order Acknowledgement Request</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Do you need a copy of your original order acknowledgement?  Your request will be queued and sent to @Current.User.Email.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnRequest">Request</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Jasmine 26-10-2021 -->
+<div class="modal" id="ShipDetails" role="dialog" aria-labelledby="ShipDetails" aria-hidden="true">
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    @*@Scripts.Render("~/datatables")*@
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var year = @Model.SelectedYear;
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            var order;
+            var salesRepCode;
+
+            $('#OrderHistory').DataTable({
+                "pageLength": 50,
+                "info": true,
+                "paging": true,
+                "order": [[3, "desc"]],
+                columnDefs: [
+                    { orderable: false, targets: [0, 1] },
+                    { orderable: true, className: 'reorder', targets: '_all' }
+                ]
+            });
+
+            $('#OrderHistory tbody tr').on('click', '.tracking', function (e) {
+                ShowWorkingImage();
+				$.post("@Url.Action("TrackingNumbers")",{ __RequestVerificationToken: token, id: $(this).data("id") }).done(function (data) {
+                    HideWorkingImage();
+                    $("#TrackingNumbers").html(data);
+                    $('#TrackingNumbers').modal('show');
+				}).fail(function (request, status, error) { });
+            });
+
+            //Jasmine 26-10-2021 start
+            $('#OrderHistory tbody tr').on('click', '.shipdetails', function (e) {
+                
+                ShowWorkingImage();
+				$.post("@Url.Action("ShipDetails")",{ __RequestVerificationToken: token, id: $(this).data("id") }).done(function (data) {
+                    HideWorkingImage();
+                    $("#ShipDetails").html(data);
+                    $('#ShipDetails').modal('show');
+				}).fail(function (request, status, error) { });
+            });
+            //Jasmine 26-10-2021 end
+        
+
+            $("#btnRequest").on("click", function (e) {
+                ShowWorkingImage();
+                e.preventDefault();
+				$.post("@Url.Action("SendOrderAckByOrderNum")", { __RequestVerificationToken: token, id: order, salesRepCode: salesRepCode }).done(function (data) {
+                    if (data == "OK") {
+                        HideWorkingImage();
+                        $('#OrderAck').modal('show');
+                    } else if (data = "UNAUTHORIZED") {
+                        HideWorkingImage();
+                        alert("Unauthorized order request");
+                }
+                }).fail(function (request, status, error) { });
+            });
+
+            $('#OrderHistory tbody tr').on('click', '.print', function (e) {
+                $('#OrderAckRequest').modal('show');
+                order = $(this).data("id");
+                salesRepCode = $(this).data("rep");
+            });
+
+            $("#SelectedYear").change(function () {
+                year = this.value;
+            });
+
+            $("#btnDownload").bind("click", function (e) {
+                e.preventDefault(); @* prevent default click behavior *@
+                window.location = "/RepPortal/Orders/OrderHistory_Excel?year=" + year;
+            });
+
+        });
+
+       
+    </script>
+}

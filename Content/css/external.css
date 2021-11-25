@@ -1,0 +1,97 @@
+﻿/*******************************************/
+/*#region GENERAL STYLES */
+/******************************************/
+.PT-footer-fixed-bottom {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: white;
+    text-align: left;
+    padding: 0 0 10px 10px;
+}
+
+    .PT-footer-fixed-bottom div {
+        font-weight: 500;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+        .PT-footer-fixed-bottom div a {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+            .PT-footer-fixed-bottom div a:hover {
+                color: rgba(255, 255, 255, 0.7) !important;
+            }
+
+.PT-forgotpassword, .PT-forgotpassword:hover {
+    color: rgba(255, 255, 255, 0.6);
+    -webkit-transition: color 0.3s ease;
+    transition: color 0.3s ease;
+    text-decoration: none;
+    padding-left: .2rem;
+}
+
+#login-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.validation-summary-errors ul {
+    list-style: none;
+    list-style-type: none;
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
+}
+
+/*This is assigned by jquery.validate.unobtrusive.  Keep class name same to avoid having to change the included js incase we need
+    to upgrade the js later.
+*/
+.validation-summary-errors, .input-validation-error, input-validation-error:focus {
+    border: 1px solid #a94442 !important;
+    background-color: #f2dede !important;
+    background-image: linear-gradient(to bottom, #f2dede 0%, #e7c3c3 100%);
+}
+
+.text-validation-error {
+    color: #a94442;
+}
+
+.PT-alert {
+    position: relative;
+    padding: 0.75rem 0.75rem;
+    margin-bottom: 1rem;
+    border-radius: 0.35rem;
+    color: #a94442;
+}
+/*#endregion*/
+
+/*******************************************/
+/*#region BUTTONS */
+/******************************************/
+.PT-btn-default {
+    color: #fff;
+    background-color: #444;
+    border-color: #999;
+}
+
+    .PT-btn-default:hover {
+        color: #fff;
+        background-color: #111;
+        border-color: #666;
+    }
+
+    .PT-btn-default:focus, .PT-btn-default.focus {
+        -webkit-box-shadow: 0 0 0 0.2rem rgba(17, 17, 17, 1);
+        box-shadow: 0 0 0 0.2rem rgba(102, 102, 102, 1);
+    }
+
+    .PT-btn-default.disabled, .PT-btn-default:disabled {
+        color: #fff;
+        background-color: #999;
+        border-color: #eee;
+    }
+/*#endregion*/

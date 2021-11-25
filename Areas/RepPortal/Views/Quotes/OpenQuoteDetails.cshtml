@@ -1,0 +1,360 @@
+﻿<!--
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+
+    </div>
+</body>
+</html>
+    -->
+
+@using MyUtils
+@using protean.Infrastructure
+@model protean.Areas.RepPortal.Models.OpenQuoteDetailViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutInternal.cshtml";
+    ViewBag.Title = "Open Quote " + Model.QuoteDetails.GRC_OpenQuotesActiveReps_QuoteNum;
+}
+
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+}
+@*-- Page Heading --*@
+<div class="pt-page-header flex-container align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fa fa-file-alt fa-fw mr-2"></i>Open Quote @Model.QuoteDetails.GRC_OpenQuotesActiveReps_QuoteNum</h1>
+    <div class="flex-container">
+        @*<a href="" target="_blank" class="btn btn-circle btn-primary shadow-sm mr-2 print" title="Request Order Acknowledgement"><i class="fas fa-print fa-sm"></i></a>*@
+        @*<a href="" class="btn btn-circle btn-primary shadow-sm mr-2 download" title="Download order as XLSX"><i class="fas fa-download fa-sm"></i></a>*@
+        <a href="@Url.Action("OpenQuotes")" class="btn btn-circle btn-primary shadow-sm"><i class="fas fa-arrow-left fa-sm"></i></a>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row mb-4">
+        <div class="col-xl-9 col-lg-9">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-gray-600">Details</h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">Reports:</div>
+                            <a class="dropdown-item download" href="#"><i class="fas fa-download fa-sm mr-2"></i> Export List</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label">Customer</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <input class="form-control disabled" type="text" placeholder="@Model.QuoteDetails.GRC_OpenQuotesActiveReps_CustomerName" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label">Project</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <input class="form-control disabled" type="text" placeholder="@Model.QuoteDetails.GRC_OpenQuotesActiveReps_Project" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label">PO</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <input class="form-control disabled" type="text" placeholder="@Model.QuoteDetails.GRC_OpenQuotesActiveReps_PONum" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label">Quote Amount</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-dollar-sign text-gray-500"></i></span></div>
+                                    <input class="form-control disabled" type="text" placeholder="@Convert.ToDouble(Model.QuoteDetails.GRC_OpenQuotesActiveReps_QuoteTotal).ToString("C")" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label">Quote Date</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <input class="form-control disabled" type="text" placeholder="@Model.QuoteDetails.GRC_OpenQuotesActiveReps_EntryDate.ToString("MM/dd/yyyy")" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label">Expiration Date</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <input class="form-control disabled" type="text" placeholder="@Model.QuoteDetails.GRC_OpenQuotesActiveReps_ExpirationDate.ToString("MM/dd/yyyy")" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label">Rep Group Name</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <input class="form-control disabled" type="text" placeholder="@Model.QuoteDetails.GRC_OpenQuotesActiveReps_PrimRepName" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label">Region</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <input class="form-control disabled" type="text" placeholder="@Model.QuoteDetails.GRC_OpenQuotesActiveReps_Description" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label">Account Manager</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <input class="form-control disabled" type="text" placeholder="@Model.QuoteDetails.GRC_OpenQuotesActiveReps_AccountManager" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-9 mb-4">
+                    @*<div class="card shadow mb-4">
+                            <a href="" class="download" class="text-decoration-none" style="text-decoration:none;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <h5 class=" font-weight-bold text-uppercase mb-1">Download XLSX</h5>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-download fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 text-uppercase">
+                                actions
+                            </div>
+                            <div class="card-body">
+                                <div class="list-group list-group-flush">
+                                    <a class="list-group-item list-group-item-action" href="" role="tab">
+                                        <span class=""><i class="fas fa-download mr-2"></i></span>
+                                        <span class="">XLSX</span>
+                                    </a>
+                                    <a class="list-group-item list-group-item-action " href="" role="tab">
+                                        <span class=""><i class="fas fa-file-download mr-2"></i></span>
+                                        <span class="">Report</span>
+                                    </a>
+                                    <a class="list-group-item list-group-item-action " href="" role="tab">
+                                        <span class=""><i class="fas fa-print mr-2"></i></span>
+                                        <span class="">Print</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>*@
+                    
+                    <!--<div class="card shadow bg-warning @MyHelpers.ShowNotShow((Convert.ToBoolean(Model.QuoteDetails.GRC_RepGroupOpenOrders_CreditHold) ? true : false)) mb-4">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <h4 class=" font-weight-bold text-uppercase mb-1 text-white">On Hold</h4>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-exclamation fa-2x text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card shadow bg-warning @MyHelpers.ShowNotShow((Convert.ToBoolean(Model.QuoteDetails.GRC_RepGroupOpenOrders_OrderHeld) ? true : false)) mb-4">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <h4 class=" font-weight-bold text-uppercase mb-1 text-white">Order Held</h4>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-exclamation fa-2x text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Quotation</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                <a href="" class="print">
+                                    <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="~/Content/img/undraw_Files_sent_re_kv00.svg" alt="">
+                                </a>
+                            </div>
+                            <p>Need a copy of your original quotation? Your request will be queued and sent to @Current.User.Email.</p>
+                            <a rel="nofollow" href="" class=" print">Request Quote Copy &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-gray-600">Lines<small class="text-muted ml-2">(click line for details)</small></h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">Reports:</div>
+                            <a class="dropdown-item download" href="#"><i class="fas fa-download fa-sm mr-2"></i> Download xlsx</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        @if (Model.QuoteLineDetails != null && Model.QuoteLineDetails.value.Count > 0)
+                        {
+                            <table id="OpenQuotes" class="table table-striped table-hover" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Line #</th>
+                                        <th>Part Num</th>
+                                        <th>Description</th>
+                                        <th>Qty</th>
+                                        <th>Unit Price</th>
+                                        <th>Discount</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.QuoteLineDetails.value)
+                                    {
+                                        <tr data-id="@item.QuoteDtl_QuoteLine" data-comment="@(item.QuoteDtl_QuoteComment.ToString().Replace($"\r", $"<br />"))" class="pt-clickable click">
+                                            <td>
+                                                <i class="fas fa-info-circle fa-sm fa-fw mr-2 text-info" title="click line for details" data-toggle="tooltip" data-placement="top"></i>
+                                            </td>
+                                            <td>
+                                                @item.QuoteDtl_QuoteLine
+                                            </td>
+                                            <td>
+                                                @item.QuoteDtl_PartNum
+                                            </td>
+                                            <td>
+                                                @item.QuoteDtl_LineDesc
+                                            </td>
+                                            <td>
+                                                @Convert.ToDouble(item.QuoteDtl_OrderQty)
+                                            </td>
+                                            <td>
+                                                @Convert.ToDouble(item.QuoteDtl_DocExpUnitPrice).ToString("C")
+                                            </td>
+                                            <td>
+                                                @Convert.ToDouble(item.QuoteDtl_Discount).ToString("C")
+                                            </td>
+                                            <td>
+                                                @Convert.ToDouble(item.Calculated_LineTotal).ToString("C")
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p>Quote has no lines.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="modal fade" id="CommentModal" tabindex="-1" role="dialog" aria-labelledby="Comment" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="commentModelLabel"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="lineDetails"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="QuotePrint" tabindex="-1" role="dialog" aria-labelledby="QuotePrint" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="QuotePrintModelLabel"><i class="fa fa-info-circle fa-fw mr-2"></i>Quotation Request</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Your request for a copy of your quotation has been queued. You can expect an email sent to @Current.User.Email shortly.</p>
+                        <p>If no quotation is received, please check our junk or spam folders. If not found, please reach out to your account manager, @Model.QuoteDetails.GRC_OpenQuotesActiveReps_AccountManager.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div> 
+    </div>
+
+
+
+    @section Scripts {
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+        @*@Scripts.Render("~/datatables")*@
+        <script type="text/javascript">
+        $(document).ready(function () {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $('#OpenQuotes').DataTable({
+                "pageLength": 50,
+                "info": true,
+                "paging": true,
+                "order": [[1, "asc"]],
+                columnDefs: [
+                    { orderable: false, targets: 0 },
+                    { orderable: true, className: 'reorder', targets: '_all' }
+                ]
+            });
+
+            $(".click").bind("click", function (e) {
+                $('#lineDetails').html($(this).data("comment").replace("\r", "<br>"));
+                $('#commentModelLabel').text("Line " + $(this).data("id") + " Details");
+                $('#CommentModal').modal('show');
+             });
+
+            $(".download").bind("click", function (e) {
+                ShowWorkingImage();
+                e.preventDefault(); @* prevent default click behavior *@
+                window.location = "/RepPortal/Quotes/GetOpenQuoteDetails_Excel/@(Cryptography.EncryptAndEncode(Model.QuoteDetails.GRC_OpenQuotesActiveReps_QuoteNum.ToString(),GlobalVariables.InternalKey))";
+                HideWorkingImage();
+            });
+
+            $(".print").bind("click", function (e) {
+                ShowWorkingImage();
+                e.preventDefault(); @* prevent default click behavior *@
+                $.post("@Url.Action("SendQuotePrint")", { __RequestVerificationToken: token, id: '@(Cryptography.EncryptAndEncode(Model.QuoteDetails.GRC_OpenQuotesActiveReps_QuoteNum.ToString(), GlobalVariables.InternalKey))' }).done(function (data) {
+                    if (data == "OK") {
+                        HideWorkingImage();
+                        $('#QuotePrint').modal('show');
+                    }
+                }).fail(function (request, status, error) { });
+            });
+
+            
+
+        });
+        </script>
+    }
+}
+

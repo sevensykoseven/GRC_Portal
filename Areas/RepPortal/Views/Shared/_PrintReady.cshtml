@@ -1,0 +1,28 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="en" class="fullscreen-bg">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="nofollow" />
+    <meta name="robots" content="noindex" />
+    <title>@ViewBag.Title | Grand Rapids Chair Co</title>
+
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    @Styles.Render("~/printready/styles")
+
+    @RenderSection("Styles", false)
+</head>
+<body>
+    @RenderBody()
+
+    @RenderSection("Scripts", false)
+</body>
+</html>

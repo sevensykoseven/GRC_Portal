@@ -1,0 +1,49 @@
+﻿@*DO NOT INDENT.  IT SCREWS UP CLASSES THAT ARE PARTIAL NAMES*@
+@*
+    Helper class to determine if something should be visible or not visible
+*@
+@helper ShowNotShow(bool value)
+{
+if (value)
+{
+@:pt-showme
+}
+else
+{
+@:pt-hideme
+}
+}
+
+@*
+    Helper class to determine quota color
+*@
+@helper GetQuotaColor(decimal value)
+{
+if (value >= 95M)
+{
+@:success
+}
+else if (value < 70M)
+{
+@:danger
+}
+else
+{
+@:warning
+}
+}
+
+@*
+    Helper class to determine user color
+*@
+@helper GetUserColor(bool? value)
+{
+if (value.HasValue && Convert.ToBoolean(value))
+{
+@:success
+}
+else
+{
+@:warning
+}
+}

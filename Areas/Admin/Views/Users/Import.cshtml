@@ -1,0 +1,152 @@
+﻿@model protean.Areas.Admin.Models.ImportSalesRepViewModel
+@{
+    ViewBag.Title = "Import From Epicor";
+}
+
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+}
+
+@*-- Page Heading --*@
+<div class="pt-page-header d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fa fa-file-import fa-fw mr-2"></i>Import Epicor Rep</h1>
+    <a href="@Url.RouteUrl("home")" class="d-none d-sm-inline-block btn btn-circle btn-primary shadow-sm"><i class="fas fa-arrow-left fa-sm"></i></a>
+</div>
+
+@Html.AntiForgeryToken()
+
+<!-- Default Card Example -->
+<div class="card mb-4">
+    <div class="card-body">
+        <p>
+            Each sales rep must first be in Epicor.  The list below is a list of all active sales reps (workforce records) found in Epicor.  It is important
+            that the record in Epicor be complete and accurate.  They must have an email address, a rep ID, and a Rep Group.  This list does not exclude accounts
+            that may already be present in the Portal.  First check that they do not already exist before attempting to create the rep in the portal.
+        </p>
+        <p>Click the import icon to create the user record in the portal.</p>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <h6 class="m-0 font-weight-bold text-primary">Workforce Records</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            @if (Model.ResponseObject.value.Count > 0)
+            {
+                <table id="salesreps" class="table table-striped" width="100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Region</th>
+                            <th>Group</th>
+                            <th>Group ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ResponseObject.value)
+                        {
+                            <tr data-id="@item.SalesRep_SalesRepCode">
+                                <td class="pt-clickable import fa-fw" data-id="@item.SalesRep_SalesRepCode"><i class="fas fa-file-import" title="Import" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></i></td>
+                                <td>@item.SalesRep_SalesRepCode</td>
+                                <td>
+                                    @item.SalesRep_Name
+                                </td>
+                                <td>
+                                    @item.SalesRep_EMailAddress
+                                </td>
+                                <td>
+                                    @item.SalesRep_ShortChar02
+                                </td>
+                                <td>
+                                    @item.UDCodes_CodeDesc
+                                </td>
+                                <td>
+                                    @item.UDCodes_CodeID
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>There are no sales reps to inport.</p>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="AddUser" tabindex="-1" role="dialog" aria-labelledby="AddUser" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddUserModelLabel"><i class="fas fa-user-plus fa-fw mr-2"></i>Add User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="@Url.Action("Add")" class="d-none d-sm-inline-block btn btn-primary shadow-sm">Create New User</a>
+                        </div>
+
+                        <div class="col-md-6">
+                            <a href="@Url.Action("Import")" class="d-none d-sm-inline-block btn btn-primary shadow-sm">Import Epicor Rep</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+
+            $('#salesreps').DataTable({
+                "pageLength": 50,
+                "info": true,
+                "paging": true,
+                "order": [[2, "asc"]],
+                columnDefs: [
+                    { orderable: false, targets: 0 },
+                    { orderable: true, className: 'reorder', targets: '_all' }
+                ]
+            });
+
+            $('#salesreps tbody tr').on('click', 'td', function (e) {
+                ShowWorkingImage();
+                e.preventDefault();
+				$.post("@Url.Action("Import", "Users")", { __RequestVerificationToken: token, id: $(this).data("id") }).done(function (result) {
+                    if (result != null && result.success)
+                        window.location = "@Url.Action("Edit", "Users")" + "/" + result.id;
+                    else {
+                        $('#ErrorModal').modal('show');
+                        HideWorkingImage();
+                    }
+                }).fail(function (request, status, error) {
+                    HideWorkingImage();
+                });
+
+            });
+        });
+    </script>
+}

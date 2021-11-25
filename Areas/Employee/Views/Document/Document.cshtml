@@ -1,0 +1,43 @@
+﻿@model protean.Areas.Employee.Models.Document
+@{
+    Layout = "~/Views/Shared/_LayoutInternal.cshtml";
+    ViewBag.Title = "Manage Document";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <title>Manage Documents</title>
+</head>
+<body style="padding:5px;">
+    @using (Html.BeginForm("Document", "Document", FormMethod.Post, new
+    { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <h1>
+            Manage Documents
+        </h1>
+        <hr />
+        <div>
+            <input type="file" name="UploadFile" class="btn " required />
+            <input type="submit" name="submit" class="btn btn-primary" value="Upload" />
+            @ViewBag.Message
+            <hr />
+            <table cellpadding="0" cellspacing="0" class="table table-striped">
+                <tr>
+                    <th style="width:50px">File ID</th>
+                    <th style="width:120px">File Name</th>
+                    <th style="width:80px">Download</th>
+                </tr>
+            </table>
+
+            
+        </div>
+    }
+    <div>
+    </div>
+</body>
+</html>

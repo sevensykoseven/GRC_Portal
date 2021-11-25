@@ -1,0 +1,12 @@
+﻿<footer class="sticky-footer bg-white">
+    <div class="my-auto">
+        <div class="copyright my-auto pt-build" style="display:flex;justify-content:space-between" title="Version: @typeof(protean.MvcApplication).Assembly.GetName().Version   @protean.Infrastructure.Utils.GetBuildDate().ToString()">
+            <div class="pt-copyright"><a href="https://www.grandrapidschair.com" target="_blank" class="text-decoration-none text-gray-800">&copy; @DateTime.Now.Year.ToString() Grand Rapids Chair Co</a></div>
+            @*@if (System.Configuration.ConfigurationManager.AppSettings["EnvironmentType"].ToLower() == "development")
+            {
+                <div class="pt-build">Build: @typeof(protean.MvcApplication).Assembly.GetName().Version, @protean.Infrastructure.Utils.GetBuildDate().ToString()</div>
+            }*@
+            <div class="pt-build"><a href="https://grandrapidschair.com//terms-and-conditions/" target="_blank" class="text-decoration-none">Terms of Use</a></div>
+        </div>
+    </div>
+</footer>

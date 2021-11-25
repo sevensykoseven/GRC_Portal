@@ -1,0 +1,156 @@
+﻿@model protean.Models.ApplicationUser
+@{
+    ViewBag.Title = "Profile - Personal Information";
+}
+
+<div class="pt-page-header d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fa fa-user fa-fw mr-2"></i>My Profile</h1>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-xl-3 col-lg-9 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <div class="flex-container">
+                        <div class="kt-media-divcorrection">
+                            <div class="kt-media kt-media--lg kt-media--circle">
+                                @if (!String.IsNullOrWhiteSpace(Current.User.BadgePath))
+                                {
+                                    <img src="@Current.User.BadgePath" alt="image">
+                                }
+                                else
+                                {
+                                    <span class="pt-badgecolor">@Html.DisplayFor(x => Current.User.Initials)</span>
+                                }
+                            </div>
+                        </div>
+                        <div>
+                            <div href="#" class="m-0 font-weight-bold text-primary">
+                                @Current.User.FullName
+                            </div>
+                            <div class="pt-user__desc">
+                                @Current.User.Title
+                            </div>
+                            @if (User.IsInRole("super"))
+                            {
+                                <div class="pt-user__desc">
+                                    Roles: @String.Join(", ", Current.User.RoleNames().Select(x => x.ToString()).ToArray())
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a class="list-group-item list-group-item-action " href="@Url.RouteUrl("profile")" role="tab">
+                            <span class=""><i class="fas fa-id-card mr-2"></i></span>
+                            <span class="">Personal Information</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action " href="@Url.Action("ChangePassword")" role="tab">
+                            <span class=""><i class="fas fa-cog mr-2"></i></span>
+                            <span class="">Change Password</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-9 col-lg-9 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <div class="flex-container">
+                        <div class="">
+                            <h6 class="m-0 font-weight-bold text-gray-600">Personal Information</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (User.IsInRole("super"))
+                    {
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label">Avatar Path</label>
+                            <div class="col-lg-9 col-xl-6">
+                                @Html.EditorFor(model => model.BadgePath, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.BadgePath, "", new { @class = "text-validation-error" })
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "col-xl-3 col-lg-3 col-form-label" })
+                        <div class="col-lg-9 col-xl-6">
+                            <input class="form-control disabled" type="text" placeholder="@Model.FirstName" readonly>
+                            @Html.HiddenFor(model => model.FirstName)
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "col-xl-3 col-lg-3 col-form-label" })
+                        <div class="col-lg-9 col-xl-6">
+                            <input class="form-control disabled" type="text" placeholder="@Model.LastName" readonly>
+                            @Html.HiddenFor(model => model.LastName)
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "col-xl-3 col-lg-3 col-form-label" })
+                        <div class="col-lg-9 col-xl-6">
+                            <input class="form-control disabled" type="text" placeholder="@Model.Title" readonly>
+                            @Html.HiddenFor(model => model.Title)
+                        </div>
+                    </div>
+                    @if (User.IsInRole("salesrep"))
+                    {
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label">Rep Group</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <input class="form-control disabled" type="text" placeholder="@Model.SalesRep.RepGroupDescription" readonly>
+                            </div>
+                        </div>
+                    }
+                    @*<div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Contact Phone</label>
+            <div class="col-lg-9 col-xl-6">
+                <div class="input-group">
+                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-phone-alt text-gray-500"></i></span></div>
+                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-validation-error" })
+                </div>
+            </div>
+        </div>*@
+                    <div class="form-group row">
+                        <label class="col-xl-3 col-lg-3 col-form-label">Email Address</label>
+                        <div class="col-lg-9 col-xl-6">
+                            <div class="input-group">
+                                <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-at text-gray-500"></i></span></div>
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-validation-error" })
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="row">
+                            <div class="col-lg-3 col-xl-3">
+                            </div>
+                            <div class="col-lg-9 col-xl-9">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @if (TempData["response"] != null)
+    {
+        <script type="text/javascript">
+			$(document).ready(function () {
+                ShowMessage('@TempData["response"]', 'bg-success');
+			});
+        </script>
+
+    }
+}

@@ -1,0 +1,64 @@
+﻿
+@model protean.Areas.RepGroupPortal.Models.ShipDetailsViewModel
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="TrackingNumberTitle">Ship Details for Order - @Model.OrderNum</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            @if (Model.ResponseObject.value.Count > 0)
+            {
+                <table id="OpenOrders" class="table table-striped table-hover" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Line</th>
+                            <th>Part Num</th>
+                            <th>Qty</th>
+                            <th>Pack ID</th>
+                            <th>Ship Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ResponseObject.value)
+                        {
+                            <tr>
+                                <td>
+                                    @item.OrderDtl_OrderLine
+                                </td>
+                                <td>
+                                    @item.OrderDtl_PartNum
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.OrderRel_SellingReqQty).ToString("0.00")
+                                </td>
+                                <td>
+                                    @item.ShipHead_PackNum
+                                </td>
+                                <td>
+                                    @Convert.ToDateTime(item.ShipHead_ShipDate).ToShortDateString()
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+
+            }
+            else
+            {
+                <p class="mr-2 ml-2">There are no shipment available against this order</p>
+            }
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+
+
+

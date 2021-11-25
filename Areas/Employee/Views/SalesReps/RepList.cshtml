@@ -1,0 +1,128 @@
+﻿
+@model IEnumerable<protean.Models.ApplicationUser>
+
+@{
+    ViewBag.Title = "Users and Roles";
+}
+
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+}
+
+@Html.AntiForgeryToken()
+
+@*-- Page Heading --*@
+<div class="pt-page-header d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fa fa-users fa-fw mr-2"></i>Sales Reps</h1>
+    <a href="@Url.RouteUrl("home")" class="d-none d-sm-inline-block btn btn-circle btn-primary shadow-sm"><i class="fas fa-arrow-left fa-sm"></i></a>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Reps In Portal</h6>
+                <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                        <div class="dropdown-header">Reports:</div>
+                        <a class="dropdown-item download" href="#"><i class="fas fa-download fa-sm mr-2"></i> Export List</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="Users" class="table table-striped table-hover" width="100%">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Last Name</th>
+                                <th>First Name</th>
+                                <th>Title</th>
+                                <th>Roles</th>
+                                <th>Enabled</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ToList())
+                            {
+                                <tr data-id="@item.Id" class="pt-clickable click alert-@MyHelpers.GetUserColor(item.IsEnabled)">
+                                    <td>
+                                        <div class="kt-media kt-media--lg kt-media--circle">
+                                            @if (!String.IsNullOrWhiteSpace(item.BadgePath))
+                                            {
+                                                <img src="@item.BadgePath" alt="image">
+                                            }
+                                            else
+                                            {
+                                                <span class="pt-badgecolor">@Html.DisplayFor(x => item.Initials)</span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @item.LastName
+                                    </td>
+                                    <td>
+                                        @item.FirstName
+                                    </td>
+                                    <td>
+                                        @item.Title
+                                    </td>
+                                    <td>
+                                        @String.Join(", ", item.RoleNames().Select(x => x.ToString()).ToArray())
+                                    </td>
+                                    <td>@item.IsEnabled</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            var table = $('#Users').DataTable({
+                "pageLength": 25,
+                "info": true,
+                "paging": true,
+                "order": [[1, "asc"]],
+                columnDefs: [
+                    { orderable: false, targets: [0] },
+                    { orderable: true, className: 'reorder', targets: '_all' }
+
+                ]
+            });
+
+            $('#Users tbody').on('click', 'tr', function (e) {
+                ShowWorkingImage();
+			    OnClickableRow("@Url.Action("Edit", "SalesReps")", $(this).data("id"), e);
+            });
+
+             $(".download").bind("click", function (e) {
+                ShowWorkingImage();
+                e.preventDefault(); @* prevent default click behavior *@
+                window.location = "/Employee/SalesReps/GetRepList_Excel";
+                HideWorkingImage();
+            });
+        });
+    </script>
+
+    @if (TempData["response"] != null)
+    {
+        <script type="text/javascript">
+			$(document).ready(function () {
+                ShowMessage('@TempData["response"]', 'bg-success');
+                @(TempData["response"] = null)
+			});
+        </script>
+
+    }
+}
